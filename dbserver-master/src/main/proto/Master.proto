@@ -1,0 +1,494 @@
+// This file contains protocol buffers that are used for Algo service.
+
+syntax = "proto3";
+
+option java_package = "com.fiberhome.dbserver.common.transport.protobuf";
+option java_outer_classname = "MasterServerProtos";
+
+import "DBServer.proto";
+
+//心跳请求
+message HeartBeatRequest {
+    ServerNameProto slaveName = 1;
+    MemoryResourceProto memResource = 2;
+    JvmResourceProto jvmResource = 3;
+    repeated RegionLoadProto regionLoads = 4;
+    int64 reportTime = 5;
+    BaseRequestProto baseRequest = 6;
+}
+
+//心跳响应
+message HeartBeatResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+message SlaveStatusResponse {
+    // ServerName的字符表示
+    map<string, SlaveLoadProto> slaves = 1;
+    BaseResponseProto baseResponse = 2;
+}
+
+//获取所有Slave响应
+message SlaveQueryResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated TableElementProto table = 2;
+}
+message TableElementProto {
+    SlaveStatusProto slaveStatus = 1;
+    ServerNameProto serverName = 2;
+    SlaveLoadProto slaveLoad = 3;
+}
+
+//设置表的Region规划请求
+message RegionSplitInfoSetRequest {
+    BaseRequestProto baseRequest = 1;
+    RegionTypeProto regionType = 2;
+    PartitionLoadTypeProto partitionLoadType = 3;
+    map<string, CKRangeListProto> ckSplits = 4;
+    TableIdentifierProto tableIdentifier = 5;
+    ProjectionIdentifierProto projectionIdentifier = 6;
+}
+message CKRangeListProto {
+    repeated CKRangeProto CKRangeList = 1;
+}
+
+message CKRangeProto {
+    string startKey = 1;
+    string endKey = 2;
+}
+//设置表的Region规划响应
+message RegionSplitInfoSetResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+// 查询表的region规划请求
+message RegionSplitInfoGetRequest {
+    BaseRequestProto baseRequest = 1;
+    RegionTypeProto regionType = 2;
+    PartitionLoadTypeProto partitionLoadType = 3;
+    TableIdentifierProto tableIdentifier = 4;
+    ProjectionIdentifierProto projectionIdentifier = 5;
+}
+
+// 查询表的region规划响应
+message RegionSplitInfoGetResponse {
+    BaseResponseProto baseResponse = 1;
+    map<string, CKRangeListProto> ckSplits = 2;
+
+}
+
+//查询表的Region分布请求
+message RegionLocationsGetRequest {
+    repeated PartitionValueProto partitionValues = 1;
+    RegionTypeProto regionType = 2;
+    BaseRequestProto baseRequest = 3;
+    TableIdentifierProto tableIdentifier = 4;
+    ProjectionIdentifierProto projectionIdentifier = 5;
+}
+//查询表的Region分布响应
+message RegionLocationsGetResponse {
+    //RegionType 的字符表示
+    repeated RegionLocationTableItem locations = 1;
+    BaseResponseProto baseResponse = 2;
+}
+
+message RegionLocationTableItem
+{
+    RegionTypeProto regionType = 1;
+    PartitionValueProto partitionValue = 2;
+    repeated RegionLocationProto regionLocations = 3;
+}
+
+message RegionLocationTableProto {
+    repeated RegionLocationInfo regionLocationInfo = 1;
+}
+message RegionLocationInfo {
+    string row = 1;
+    string column = 2;
+    repeated RegionLocationProto regionLocationProto = 3;
+}
+
+//删除分区下所有Region的请求
+message RegionDeleteRequest {
+    repeated PartitionValueProto partitionValues = 1;
+    TableIdentifierProto tableIdentifier = 2;
+    BaseRequestProto baseRequest = 3;
+    ProjectionIdentifierProto projectionIdentifier = 4;
+}
+// 删除分区下所有Region的响应
+message RegionDeleteResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated string errorDetail = 2;
+}
+
+//获取所有Slave请求
+message SlaveQueryRequest {
+    BaseRequestProto baseRequest = 1;
+}
+
+//指定状态Slave请求
+message SlaveStatusRequest {
+    BaseRequestProto baseRequest = 1;
+    SlaveStatusProto slaveStatus = 2;
+}
+//指定库名获取库中所有表名称请求 若库名称为空 则获取所有库中的所有表名
+message TableIdentifiersGetRequest {
+    BaseRequestProto baseRequest = 1;
+    string dataBaseName = 2;
+}
+
+// 指定库名获取库中所有表名称响应 若库名称为空 则获取所有库中的所有表名
+message TableIdentifiersGetResponse {
+    BaseResponseProto baseResponse = 1;
+    map<string, TableIdentifierList> tableInfos = 2;
+}
+message TableIdentifierList {
+    repeated TableIdentifierProto tableIdentifierProto = 1;
+}
+
+// 指定表名称获取表描述请求
+message TableDescriptorGetRequest {
+    repeated TableIdentifierProto tableIdentifier = 1;
+    BaseRequestProto baseRequest = 2;
+}
+// 指定表名称获取表描述响应
+message TableDescriptorGetResponse {
+    repeated TableDescriptorProto tableDescriptors = 1;
+    BaseResponseProto baseResponse = 2;
+}
+// 创建表请求
+message TableCreateRequest {
+    TableDescriptorProto tableDescriptor = 1;
+    BaseRequestProto baseRequest = 2;
+}
+// 创建表响应
+message TableCreateReponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+// 删除表请求
+message TableDropRequest {
+    BaseRequestProto baseRequest = 1;
+    TableIdentifierProto tableIdentifier = 2;
+}
+// 删除表响应
+message TableDropReponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+// 创建分区请求
+message PartitionCreateRequest {
+    BaseRequestProto baseRequest = 1;
+    repeated PartitionValueProto partitionValues = 2;
+    TableIdentifierProto tableIdentifier = 3;
+}
+
+// 创建分区响应
+message PartitionCreateReponse {
+    BaseResponseProto baseResponse = 1;
+}
+//删除分区请求
+message PartitionDeleteRequest {
+    BaseRequestProto baseRequest = 1;
+    repeated PartitionValueProto partitionValues = 2;
+    TableIdentifierProto tableIdentifier = 3;
+}
+
+//删除分区响应
+message PartitionDeleteResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//启用合并请求
+message CompactRequest {
+    TableIdentifierProto tableIdentifier = 1;
+    repeated PartitionValueProto partitionValues = 2;
+    BaseRequestProto baseRequest = 3;
+}
+//用合并响应
+message CompactResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+message TableRenameRequest {
+    BaseRequestProto baseRequest = 1;
+    TableIdentifierProto oldTable = 2;
+    TableIdentifierProto newTable = 3;
+}
+
+message TableRenameResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//获取指定projection描述请求
+message ProjectionDescriptorGetRequest {
+    BaseRequestProto baseRequest = 1;
+    repeated ProjectionIdentifierProto projectionIdentifiers = 2;
+}
+
+//获取指定projection描述响应
+message ProjectionDescriptorGetResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated ProjectionDescriptorProto projectionDescriptors = 2;
+}
+//创建projection请求
+message ProjectionCreateRequest {
+    BaseRequestProto baseRequest = 1;
+    ProjectionDescriptorProto projectionDescriptor = 2;
+}
+
+//创建projection响应
+message ProjectionCreateResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//删除projection请求
+message ProjectionDropRequest {
+    BaseRequestProto baseRequest = 1;
+    ProjectionIdentifierProto projectionIdentifier = 2;
+}
+
+//删除projection响应
+message ProjectionDropResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//创建projection分区请求
+message ProjectionPartitionCreateRequest {
+    BaseRequestProto baseRequest = 1;
+    ProjectionIdentifierProto projectionIdentifier = 2;
+    repeated PartitionValueProto partitionValues = 3;
+}
+
+//创建projection分区响应
+message ProjectionPartitionCreateResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//删除projection分区请求
+message ProjectionPartitionDeleteRequest {
+    BaseRequestProto baseRequest = 1;
+    ProjectionIdentifierProto projectionIdentifier = 2;
+    repeated PartitionValueProto partitionValues = 3;
+}
+
+//删除projection分区响应
+message ProjectionPartitionDeleteResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//设置Projection分区状态请求
+message ProjectionPartitionStatusSetRequest {
+    BaseRequestProto baseRequest = 1;
+    ProjectionIdentifierProto projectionIdentifier = 2;
+    PartitionValueProto partitionStatus = 3;
+
+}
+//设置Projection分区状态响应
+message ProjectionPartitionStatusSetResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//启用Projection合并请求
+message CompactProjectionRequest {
+    BaseRequestProto baseRequest = 1;
+    ProjectionIdentifierProto projectionIdentifier = 2;
+    repeated PartitionValueProto partitionValues = 3;
+}
+
+//启用Projection合并响应
+message CompactProjectionResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//Projection重命名请求
+message ProjectionRenameRequest {
+    BaseRequestProto baseRequest = 1;
+    ProjectionIdentifierProto oldProjection = 2;
+    ProjectionIdentifierProto newProjection = 3;
+}
+
+//Projection重命名响应
+message ProjectionRenameResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+// 分区状态设置请求
+message PartitionStatusSetRequest {
+    BaseRequestProto baseRequest = 1;
+    TableIdentifierProto tableIdentifier = 2;
+    PartitionValueProto partitionValue = 3;
+}
+
+// 分区设置状态响应
+message PartitionStatusSetResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+
+message DatabaseCreateRequest {
+    BaseRequestProto baseRequest = 1;
+    string databaseName = 2;
+}
+
+message DatabaseCreateResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+// 获取所有库名称请求
+message DatabaseNamesGetRequest {
+    BaseRequestProto baseRequest = 1;
+}
+
+// 获取所有库名称响应
+message DatabaseNamesGetResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated string dataBaseNames = 2;
+}
+
+message PartitionDescriptorGetRequest {
+    BaseRequestProto baseRequest = 1;
+    TableIdentifierProto tableIdentifier = 2;
+}
+
+message PartitionDescriptorGetResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated PartitionValueProto partitionValues = 2;
+}
+
+message ProjectionPartitionDescriptorGetRequest {
+    BaseRequestProto baseRequest = 1;
+    repeated ProjectionDescriptorProto projectionIdentifier = 2;
+}
+
+message ProjectionPartitionDescriptorGetResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated PartitionValueProto partitionValues = 2;
+}
+
+//启用归档请求
+message ArchiveRequest {
+    BaseRequestProto baseRequest = 1;
+    TableIdentifierProto tableIdentifier = 2;
+
+    repeated PartitionValueProto partitionValues = 3;
+}
+
+//归档响应
+message ArchiveResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+// 获取partition的region分布请求
+message PartitionLocationGetRequest {
+   BaseRequestProto baseRequest = 1;
+}
+
+// 获取partition的region分区响应
+message PartitionLocationGetResponse {
+   BaseResponseProto baseResponse = 1;
+   repeated PartitionLocationProto partitionLocationProto = 2;
+}
+
+service SlaveManagerService {
+    // Server管理
+    rpc getSlaves (SlaveStatusRequest) returns (SlaveStatusResponse);
+    rpc getAllSlaves (SlaveQueryRequest) returns (SlaveQueryResponse);
+}
+
+service RegionManagerService {
+    // region管理
+    rpc setTableRegionSplitInfo (RegionSplitInfoSetRequest) returns (RegionSplitInfoSetResponse);
+
+    // 查询表的region规划
+    rpc getRegionSplitInfo (RegionSplitInfoGetRequest) returns (RegionSplitInfoGetResponse);
+
+    //查询表的region分布
+    rpc getRegionLocations (RegionLocationsGetRequest) returns (RegionLocationsGetResponse);
+
+    // 获取所有表分区的region分布slave信息
+    rpc getPartitionLocations(PartitionLocationGetRequest) returns (PartitionLocationGetResponse);
+}
+
+service HeartBeatMangerService {
+    // 心跳上报
+    rpc reportHeartBeat (HeartBeatRequest) returns (HeartBeatResponse);
+}
+
+// table manager interface
+service TableManagerService {
+
+    // 创建库
+    rpc createDataBase (DatabaseCreateRequest) returns (DatabaseCreateResponse);
+
+    // 获取所有库名称
+    rpc getDatabaseNames (DatabaseNamesGetRequest) returns (DatabaseNamesGetResponse);
+
+    // 获取所有表描述
+    rpc getTableIdentifiers (TableIdentifiersGetRequest) returns (TableIdentifiersGetResponse);
+
+    // 获取指定表名称的表描述
+    rpc getTableDescriptor (TableDescriptorGetRequest) returns (TableDescriptorGetResponse);
+
+    // 创建表接口
+    rpc createTable (TableCreateRequest) returns (TableCreateReponse);
+
+    // 删除表
+    rpc dropTable (TableDropRequest) returns (TableDropReponse);
+
+    // 创建分区
+    rpc createPartition (PartitionCreateRequest) returns (PartitionCreateReponse);
+
+    // 删除分区
+    rpc deletePartition (PartitionDeleteRequest) returns (PartitionDeleteResponse);
+
+    // 设置分区状态
+    rpc setPartitionStatus (PartitionStatusSetRequest) returns (PartitionStatusSetResponse);
+
+    // 启用合并
+    rpc enableCompact (CompactRequest) returns (CompactResponse);
+
+    //禁用合并
+    rpc disableCompact (CompactRequest) returns (CompactResponse);
+
+    // 重命名表
+    rpc renameTable (TableRenameRequest) returns (TableRenameResponse);
+
+    //获取指定Projection描述
+    rpc getProjectionDescriptor (ProjectionDescriptorGetRequest) returns (ProjectionDescriptorGetResponse);
+
+    //创建projection
+    rpc createProjection (ProjectionCreateRequest) returns (ProjectionCreateResponse);
+
+    //删除projection
+    rpc dropProjection (ProjectionDropRequest) returns (ProjectionDropResponse);
+
+    //重命名projection
+    rpc renameProjection (ProjectionRenameRequest) returns (ProjectionRenameResponse);
+
+    //创建projection分区
+    rpc createProjectionPartition (ProjectionPartitionCreateRequest) returns (ProjectionPartitionCreateResponse);
+
+    //删除projection分区
+    rpc deleteProjectionPartition (ProjectionPartitionDeleteRequest) returns (ProjectionPartitionDeleteResponse);
+
+    //设置Projection分区状态
+    rpc setProjectionPartitionStatus (ProjectionPartitionStatusSetRequest) returns (ProjectionPartitionStatusSetResponse);
+
+    //启用Projection合并
+    rpc enableProjectionCompact (CompactProjectionRequest) returns (CompactProjectionResponse);
+
+    //禁用Projection合并
+    rpc disableProjectionCompact (CompactProjectionRequest) returns (CompactProjectionResponse);
+
+    // 获取指定表的正常分区
+    rpc getPartitionDescriptor (PartitionDescriptorGetRequest) returns (PartitionDescriptorGetResponse);
+
+    //获取指定Projection的正常分区
+    rpc getProjectionPartitionDescriptor (ProjectionPartitionDescriptorGetRequest) returns (ProjectionPartitionDescriptorGetResponse);
+}
+
+service ArchiveManagerService {
+    // 触发归档
+    rpc archive (ArchiveRequest) returns (ArchiveResponse);
+}

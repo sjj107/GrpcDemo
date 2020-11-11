@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+    <!-- Site specific dbserver master configuration properties -->
+    <property>
+        <description>The version for dbserver cluster</description>
+        <name>dbserver.cluster.version</name>
+        <value>1.0.0</value>
+    </property>
+
+    <property>
+        <description>dbserver master host name</description>
+        <name>dbserver.master.host.name</name>
+        <value>DESKTOP-M9DMJFE</value>
+    </property>
+
+    <!-- grpc config -->
+    <property>
+        <description>Define master grpc port, default 10050</description>
+        <name>dbserver.master.grpc.server.port</name>
+        <value>10050</value>
+    </property>
+
+    <property>
+        <description>Define master heartbeat grpc port, default 10051</description>
+        <name>dbserver.master.grpc.server.heartbeatport</name>
+        <value>10051</value>
+    </property>
+
+
+    <property>
+        <description>master grpc channel num</description>
+        <name>dbserver.master.grpc.channel.num</name>
+        <value>4</value>
+    </property>
+
+    <property>
+        <description>the master grpc queue size</description>
+        <name>dbserver.master.grpc.queue.size</name>
+        <value>2000</value>
+    </property>
+
+    <property>
+        <description>the max server grpc thread</description>
+        <name>dbserver.master.grpc.max.threads</name>
+        <value>5</value>
+    </property>
+
+    <property>
+        <description>the max size of grpc transport message, unit is byte</description>
+        <name>dbserver.master.grpc.max.message.size</name>
+        <value>83886080</value>
+    </property>
+
+    <property>
+        <description>the pool size of meta</description>
+        <name>dbserver.master.meta.handle.pool.size</name>
+        <value>10</value>
+    </property>
+
+    <property>
+        <description>the pool size of region</description>
+        <name>dbserver.master.region.handle.pool.size</name>
+        <value>10</value>
+    </property>
+
+    <property>
+        <description>the pool size of archive</description>
+        <name>dbserver.master.archive.handle.pool.size</name>
+        <value>20</value>
+    </property>
+
+    <property>
+        <description>the size of coreNum</description>
+        <name>dbserver.master.thread.coreNum</name>
+        <value>1000</value>
+    </property>
+
+    <property>
+        <description>the size of maxNum</description>
+        <name>dbserver.master.thread.maxNum</name>
+        <value>10000</value>
+    </property>
+
+    <property>
+        <description>the size of maxCoreThreadCountSum</description>
+        <name>dbserver.master.thread.maxCoreThreadCountSum</name>
+        <value>6000</value>
+    </property>
+
+    <property>
+        <description>the size of maxNormalCoreThreadCount</description>
+        <name>dbserver.master.thread.maxNormalCoreThreadCount</name>
+        <value>60000</value>
+    </property>
+    <property>
+        <description>the size of maxNormalThreadCount</description>
+        <name>dbserver.master.thread.maxNormalThreadCount</name>
+        <value>60000</value>
+    </property>
+
+    <property>
+        <description>the size of maxScheduleCoreThreadCount</description>
+        <name>dbserver.master.thread.maxScheduleCoreThreadCount</name>
+        <value>3000</value>
+    </property>
+
+
+    <!-- Hadoop Kerberos user config, need to modify when install-->
+    <property>
+        <description>Hadoop Kerberos user</description>
+        <name>hadoop.kerberos.user</name>
+        <value>nbhd/fmdb-hadoop-hdfs-3-2-1-master-0.fmdb-hadoop.fxuser-ns.svc.cluster.local@FMDB-HADOOP-FXUSER-NS.FH.COM</value>
+    </property>
+
+    <property>
+        <description>Hadoop Kerberos keytab file path</description>
+        <name>hadoop.kerberos.keytab.path</name>
+        <value>conf/hadoop/nbhd.keytab</value>
+    </property>
+
+    <!-- Postgres connect config -->
+    <property>
+        <description>jdbc connect dirver</description>
+        <name>jdbc.connect.dirver</name>
+        <value>org.postgresql.Driver</value>
+    </property>
+
+    <property>
+        <description>jdbc connect host</description>
+        <name>jdbc.connect.host</name>
+        <value>JDBC.CONNECT.HOST</value>
+    </property>
+
+    <property>
+        <description>jdbc connect port</description>
+        <name>jdbc.connect.port</name>
+        <value>JDBC.CONNECT.PORT</value>
+    </property>
+
+    <property>
+        <description>jdbc connect database</description>
+        <name>jdbc.connect.database</name>
+        <value>JDBC.CONNECT.DATABASE</value>
+    </property>
+
+    <property>
+        <description>jdbc connect username</description>
+        <name>jdbc.connect.username</name>
+        <value>JDBC.CONNECT.USERNAME</value>
+    </property>
+
+    <property>
+        <description>jdbc connect password</description>
+        <name>jdbc.connect.password</name>
+        <value>JDBC.CONNECT.PASSWORD</value>
+    </property>
+
+    <property>
+        <description>default pool</description>
+        <name>executorservice.defaultpool.threadnum.core</name>
+        <value>100</value>
+    </property>
+    <property>
+        <description>default pool</description>
+        <name>executorservice.defaultpool.threadnum.max</name>
+        <value>100</value>
+    </property>
+    <property>
+        <description>default pool</description>
+        <name>executorservice.defaultpool.queue.size</name>
+        <value>100</value>
+    </property>
+    <property>
+        <description>default pool</description>
+        <name>executorservice.defaultpool.alivetime</name>
+        <value>1000</value>
+    </property>
+    <property>
+        <description>default pool</description>
+        <name>executorservice.defaultpool.threadnum.daemon</name>
+        <value>true</value>
+    </property>
+    <property>
+        <description>scheduled pool</description>
+        <name>executorservice.schedule.threadnum.core</name>
+        <value>100</value>
+    </property>
+    <property>
+        <description>scheduled pool</description>
+        <name>executorservice.schedule.threadnum.daemon</name>
+        <value>true</value>
+    </property>
+
+    <property>
+        <description>archive pool</description>
+        <name>executorservice.archivepool.threadnum.core</name>
+        <value>100</value>
+    </property>
+    <property>
+        <description>archive pool</description>
+        <name>executorservice.archivepool.threadnum.max</name>
+        <value>100</value>
+    </property>
+    <property>
+        <description>archive pool</description>
+        <name>executorservice.archivepool.queue.size</name>
+        <value>100</value>
+    </property>
+    <property>
+        <description>archive pool</description>
+        <name>executorservice.archivepool.alivetime</name>
+        <value>1000</value>
+    </property>
+    <property>
+        <description>archive pool</description>
+        <name>executorservice.archivepool.threadnum.daemon</name>
+        <value>true</value>
+    </property>
+
+    <property>
+        <description>compact pool</description>
+        <name>executorservice.compact.threadnum.core</name>
+        <value>100</value>
+    </property>
+    <property>
+        <description>compact pool</description>
+        <name>executorservice.compact.threadnum.max</name>
+        <value>100</value>
+    </property>
+    <property>
+        <description>compact pool</description>
+        <name>executorservice.compact.queue.size</name>
+        <value>100</value>
+    </property>
+    <property>
+        <description>compact pool</description>
+        <name>executorservice.compact.alivetime</name>
+        <value>1000</value>
+    </property>
+    <property>
+        <description>compact pool</description>
+        <name>executorservice.compact.threadnum.daemon</name>
+        <value>true</value>
+    </property>
+
+</configuration>

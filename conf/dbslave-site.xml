@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+    <!-- Site specific dbserver slave configuration properties -->
+    <property>
+        <description>dbserver slave host name</description>
+        <name>dbserver.slave.host.name</name>
+        <value>DESKTOP-M9DMJFE</value>
+    </property>
+
+    <!-- grpc config -->
+    <property>
+        <description>Define master grpc port, include java client and python server, default 10050</description>
+        <name>dbserver.slave.grpc.server.port</name>
+        <value>10060</value>
+    </property>
+    <property>
+        <description>slave grpc channel num</description>
+        <name>dbserver.slave.grpc.channel.num</name>
+        <value>4</value>
+    </property>
+    <property>
+        <description>the pool size of region</description>
+        <name>dbserver.slave.region.handle.pool.size</name>
+        <value>10</value>
+    </property>
+        <property>
+        <description>the pool size of load</description>
+        <name>dbserver.slave.blockletdata.handle.pool.size</name>
+        <value>10</value>
+    </property>
+        <property>
+        <description>the pool size of read</description>
+        <name>dbserver.slave.blockletindex.handle.pool.size</name>
+        <value>10</value>
+    </property>
+    <property>
+        <description>the pool size of heartbeat</description>
+        <name>dbserver.slave.heartbeat.handle.pool.size</name>
+        <value>10</value>
+    </property>
+
+     <property>
+        <description>the pool size of compact</description>
+        <name>dbserver.slave.compact.handle.pool.size</name>
+        <value>10</value>
+    </property>
+
+    <property>
+        <description>the pool size of compact</description>
+        <name>dbserver.slave.coordinateservice.handle.pool.size</name>
+        <value>10</value>
+    </property>
+
+    <property>
+        <description>the server grpc queue size</description>
+        <name>dbserver.slave.grpc.queue.size</name>
+        <value>5000</value>
+    </property>
+
+    <property>
+        <description>the max server grpc thread</description>
+        <name>dbserver.slave.grpc.max.threads</name>
+        <value>5</value>
+    </property>
+
+    <property>
+        <description>The time for wait when slave normal exit (ms) .
+        </description>
+        <name>slave.exit.timeout.max</name>
+        <value>60000</value>
+    </property>
+
+    <property>
+        <description>The number of file to start L0 compact .
+        </description>
+        <name>compact.L0.file.number</name>
+        <value>5</value>
+    </property>
+
+    <property>
+        <description>The number of file to start L1 compact .
+        </description>
+        <name>compact.L1.file.number</name>
+        <value>5</value>
+    </property>
+
+    <property>
+        <description>The number of file to start L0 compact .
+        </description>
+        <name>compact.L0.file.size</name>
+        <value>10485760</value>
+    </property>
+
+    <property>
+        <description>The number of file to start L1 compact .
+        </description>
+        <name>compact.L1.file.size</name>
+        <value>1073741824</value>
+    </property>
+
+    <property>
+        <description>The time for wait when slave query index (ms) .</description>
+        <name>slave.query.index.timeout.max</name>
+        <value>3000</value>
+    </property>
+
+    <property>
+        <description>The max size of ck list, lose efficacy if exceed .</description>
+        <name>slave.query.index.cksize.max</name>
+        <value>10000</value>
+    </property>
+</configuration>

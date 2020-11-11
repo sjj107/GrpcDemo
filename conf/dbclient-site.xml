@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+    <!-- Site specific dbserver client configuration properties -->
+
+    <!-- ************************* RPC ****************************** -->
+    <property>
+        <description> client connection grpc master port, default 10050</description>
+        <name>dbserver.master.grpc.server.port</name>
+        <value>10050</value>
+    </property>
+    <property>
+        <description> client connection grpc master port, default 10050</description>
+        <name>dbserver.server.grpc.server.heartbeatport</name>
+        <value>10051</value>
+    </property>
+    <property>
+        <description> client connection grpc salve port, default 10060</description>
+        <name>dbserver.slave.grpc.server.port</name>
+        <value>10060</value>
+    </property>
+</configuration>

@@ -1,0 +1,290 @@
+// This file contains protocol buffers that are used for common object.
+
+syntax = "proto3";
+
+option java_package = "com.fiberhome.dbserver.common.transport.protobuf";
+option java_outer_classname = "SlaveServerProtos";
+
+import "DBServer.proto";
+
+//查询块索引响应
+message IndexSearchResponse {
+    BaseResponseProto baseResponse = 1;
+    int32 indexBlockSize = 2;
+    int32 recodeSize = 3;
+    map<string, ListCKValues> partitionCKValues = 4;
+}
+
+message ListCKValues {
+    repeated CKValueProto listCKValues = 1;
+}
+
+//查询块索引请求
+message IndexSearchRequest {
+    BaseRequestProto baseRequest = 1;
+    TableIdentifierProto tableIdentifier = 2;
+    repeated PartitionValueProto partitionValue = 3;
+    string conditions = 4;
+    int32 limit = 5;
+}
+
+//块索引统计请求
+message IndexCountRequest {
+    BaseRequestProto baseRequest = 1;
+    TableIdentifierProto tableIdentifier = 2;
+    repeated PartitionValueProto partitionValue = 3;
+    string conditions = 4;
+}
+
+//块索引统计响应
+message IndexCountResponse {
+    BaseResponseProto baseResponse = 1;
+    int32 recodeSize = 2;
+}
+
+//表分区分布信息请求
+message PartitionLocationInfoRequest {
+    BaseRequestProto baseRequest = 1;
+    repeated PartitionLocationProto partitionLocation = 2;
+}
+
+//表分区分布信息响应
+message PartitionLocationInfoResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//region管理
+
+//创建region请求
+message RegionCreateRequest {
+    string name = 1;
+    bytes serialized_request = 2;
+}
+
+//表Region创建请求
+message TableRegionCreateRequest {
+
+    RegionCreateRequest regionCreateRequest = 1;
+    TableIdentifierProto tableIdentifier = 2;
+    BaseRequestProto baseRequest = 3;
+    repeated RegionInfoProto regions = 4;
+    PartitionValueProto partitionValue = 5;
+}
+
+//Projection Region创建请求
+message ProjectionRegionCreateRequest{
+    RegionCreateRequest regionCreateRequest = 1;
+    ProjectionIdentifierProto projectionIdentifier = 2;
+    BaseRequestProto baseRequest = 3;
+    repeated RegionInfoProto regions = 4;
+    PartitionValueProto partitionValue = 5;
+}
+
+//创建region响应
+message RegionCreateResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated string errorRegions = 2;
+}
+
+//删除region请求
+message SlaveRegionDeleteRequest {
+    string name = 1;
+    bytes serialized_request = 2;
+}
+
+//Table删除region请求
+message TableRegionDeleteRequest {
+    SlaveRegionDeleteRequest regionDeleteRequest = 1;
+    BaseRequestProto baseRequest = 2;
+    TableIdentifierProto tableIdentifier = 3;
+    PartitionValueProto partitionValue = 5;
+    repeated string regionIDs = 4;
+}
+
+//Projection删除region请求
+message ProjectionRegionDeleteRequest {
+    SlaveRegionDeleteRequest regionDeleteRequest = 1;
+    BaseRequestProto baseRequest = 2;
+    ProjectionIdentifierProto projectionIdentifier = 3;
+    PartitionValueProto partitionValue = 5;
+    repeated string regionIDs = 4;
+}
+
+//删除region响应
+message SlaveRegionDeleteResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated string errorRegions = 2;
+}
+
+//上线region请求
+message RegionOpenRequest {
+    string name = 1;
+    bytes serialized_filter = 2;
+}
+
+//Table上线region请求
+message TableRegionOpenRequest {
+    RegionOpenRequest regionOpenRequest = 1;
+    BaseRequestProto baseRequest = 2;
+    TableIdentifierProto tableIdentifier = 3;
+    repeated string regionIds = 4;
+    PartitionValueProto partitionValue = 5;
+}
+
+//Projection上线region请求
+message ProjectionRegionOpenRequest {
+    RegionOpenRequest regionOpenRequest = 1;
+    BaseRequestProto baseRequest = 2;
+    ProjectionIdentifierProto projectionIdentifier = 3;
+    repeated string regionIds = 4;
+    PartitionValueProto partitionValue = 5;
+}
+
+
+//上线region响应
+message RegionOpenResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated string errorRegions = 2;
+}
+
+//下线region请求
+message RegionCloseRequest {
+    string name = 1;
+    bytes serialized_filter = 2;
+}
+
+//Table下线region请求
+message TableRegionCloseRequest {
+    RegionCloseRequest regionCloseRequest = 1;
+    BaseRequestProto baseRequest = 2;
+    repeated string regionIDs = 3;
+    PartitionValueProto partitionValue = 4;
+    TableIdentifierProto tableIdentifier = 5;
+}
+
+//Projection下线region请求
+message ProjectionRegionCloseRequest {
+    RegionCloseRequest regionCloseRequest = 1;
+    BaseRequestProto baseRequest = 2;
+    repeated string regionIDs = 3;
+    PartitionValueProto partitionValue = 4;
+    ProjectionIdentifierProto projectionIdentifier = 5;
+}
+
+//下线region响应
+message RegionCloseResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated string errorRegions = 2;
+}
+
+//块路由管理
+//上报块路由请求
+message BlockletReportRequest {
+    BaseRequestProto baseRequest = 1;
+    TableIdentifierProto tableIdentifier = 2;
+    PartitionValueProto partitionValue = 3;
+    RegionInfoProto regionInfo = 4;
+    repeated FRCBlockletMetaProto frcBlockletMetas = 5;
+}
+
+//上报块路由响应
+message BlockletReportResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//查询块路由请求
+message BlockletQueryRequest {
+    BaseRequestProto baseRequest = 1;
+    TableIdentifierProto tableIdentifier = 2;
+    PartitionValueProto partitionValue = 3;
+    RegionInfoProto regionInfo = 4;
+    repeated CKValueProto ckValues = 5;
+}
+
+//查询块路由响应
+message BlockletQueryResponse {
+    BaseResponseProto baseResponse = 1;
+    repeated FRCBlockletMetaProto blocklets = 2;
+    string filter = 3;
+
+}
+
+//删除块路由请求
+message BlockletDeleteRequest {
+    BaseRequestProto baseRequest = 1;
+    PartitionValueProto partitionValue = 2;
+    RegionInfoProto regionInfo = 3;
+    repeated string frcFileNames = 4;
+}
+
+//删除块路由响应
+message BlockletDeleteResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//更新块路由请求
+message BlockletUpdateRequest {
+    BaseRequestProto baseRequest = 1;
+    TableIdentifierProto tableIdentifier = 2;
+    PartitionValueProto partitionValue = 3;
+    RegionInfoProto regionInfo = 4;
+    repeated string deleteFRCFileNames = 5;
+    repeated FRCBlockletMetaProto addFRCBlockletInfos = 6;
+}
+
+//更新块路由响应
+message BlockletUpdateResponse {
+    BaseResponseProto baseResponse = 1;
+}
+
+//块路由服务
+service SlaveBlockletDataService {
+    //上报路由信息
+    rpc reportBlocklet (BlockletReportRequest) returns (BlockletReportResponse);
+
+    //查询块路由
+    rpc getBlocklets (BlockletQueryRequest) returns (BlockletQueryResponse);
+
+    //删除块路由
+    rpc deleteBlocklet (BlockletDeleteRequest) returns (BlockletDeleteResponse);
+
+    //更新块路由
+    rpc updateBlocklet (BlockletUpdateRequest) returns (BlockletUpdateResponse);
+
+}
+
+//块索引服务
+service SlaveBlockletIndexService {
+    //查询块索引
+    rpc query (IndexSearchRequest) returns (IndexSearchResponse);
+
+    //块索引统计
+    rpc count (IndexCountRequest) returns (IndexCountResponse);
+}
+
+//Slave Region管理服务
+service SlaveRegionMangerService {
+    //创建region
+    rpc createRegion (RegionCreateRequest) returns (RegionCreateResponse);
+
+    //删除region
+    rpc deleteRegion (SlaveRegionDeleteRequest) returns (SlaveRegionDeleteResponse);
+
+    //上线region
+    rpc openRegion (RegionOpenRequest) returns (RegionOpenResponse);
+
+    //下线region
+    rpc closeRegion (RegionCloseRequest) returns (RegionCloseResponse);
+}
+
+//协调服务
+service SlaveCoordinateService {
+    //查询块索引
+    rpc query (IndexSearchRequest) returns (IndexSearchResponse);
+
+    //块索引统计
+    rpc count (IndexCountRequest) returns (IndexCountResponse);
+
+    //接收master最新的表分区信息
+    rpc updatePartitionLocation (PartitionLocationInfoRequest) returns (PartitionLocationInfoResponse);
+}

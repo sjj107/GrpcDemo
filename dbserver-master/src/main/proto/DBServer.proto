@@ -1,0 +1,401 @@
+syntax = "proto3";
+
+option java_package = "com.fiberhome.dbserver.common.transport.protobuf";
+option java_outer_classname = "DBServerProtos";
+
+// 响应码
+enum ResponseCode
+{
+    WRITE_SUCCESS = 0;
+    WRITE_FAILED = 1;
+    QUERY_SUCCESS = 2;
+    QUERY_FAILED = 3;
+    BLOCK_INDEX_QUERY_FAILED = 4;
+    BLOCK_INDEX_WRITE_FAILED = 5;
+    FRC_QUERY_FAILED = 6;
+    FRC_WRITE_FAILED = 7;
+    ORC_QUERY_FAILED = 8;
+    ORC_WRITE_FAILED = 9;
+    CREATE_TABLE_SUCCESS = 10;
+    CREATE_TABLE_FAILED = 11;
+    CREATE_PARTITION_SUCCESS = 12;
+    CREATE_PARTITION_FAILED = 13;
+    CREATE_PROJECTION_SUCCESS = 14;
+    CREATE_PROJECTION_FAILED = 15;
+    CREATE_PROJECTION_PARTITION_SUCCESS = 16;
+    CREATE_PROJECTION_PARTITION_FAILED = 17;
+    GET_TABLEDESCRIPTOR_SUCCESS = 18;
+    CREATE_REGION_SUCCESS = 19;
+    CREATE_REGION_FAILED = 20;
+    DELETE_REGION_SUCCESS = 21;
+    DELETE_REGION_FAILED = 22;
+    OPEN_REGION_SUCCESS = 23;
+    OPEN_REGION_FAILED = 24;
+    CLOSE_REGION_SUCCESS = 25;
+    CLOSE_REGION_FAILED = 26;
+    BLOCK_INDEX_INVALID = 27;
+    BLOCK_INDEX_COUNT_FAILED = 28;
+    BLOCK_ROUTE_REPORT_SUCCESS = 29;
+    BLOCK_ROUTE_REPORT_FAILED = 30;
+    BLOCK_ROUTE_UPDATE_SUCCESS = 31;
+    BLOCK_ROUTE_UPDATE_FAILED = 32;
+    BLOCK_ROUTE_QUERY_SUCCESS = 33;
+    BLOCK_ROUTE_QUERY_FAILED = 34;
+    BLOCK_ROUTE_DELETE_SUCCESS = 35;
+    BLOCK_ROUTE_DELETE_FAILED = 36;
+}
+
+//RPC请求基类
+message BaseRequestProto
+{
+	string requestID = 1;
+	int64 timestamp = 2;
+}
+
+//RPC响应基类
+message BaseResponseProto
+{
+	string responseID = 1;
+	ResponseCode responseCode = 2;
+	string errorMessage = 3;
+	int64 timestamp = 4;
+}
+
+//表名
+message TableIdentifierProto
+{
+	string databaseName = 1;
+	string tableName = 2;
+}
+
+// projection标识
+message ProjectionIdentifierProto
+{
+	TableIdentifierProto tableIdentifiger = 1;
+	string projectionName = 2;
+}
+
+//表描述
+message TableDescriptorProto
+{
+	TableIdentifierProto tableIdentifier = 1;
+	repeated ColumnDescriptorProto columns = 2;
+	PartitionDescriptorProto partitionDescriptor = 3;
+	CKDescriptorProto ckDescriptor = 4;
+	IndexDescriptorProto indexDescriptor = 5;
+	ProjectionDescriptorProto projectionDescriptor = 6;
+	int32 ttl = 7;
+	PropertiesProto tableProperties = 8;
+	int32 version = 9;
+	StoreTypeProto storeType = 10;
+	string comment = 11;
+}
+
+//分区列描述
+message	PartitionDescriptorProto
+{
+	string partitionColumnName = 1;
+	string convertFunction = 2;
+	repeated ColumnDescriptorProto columns = 3;
+	PartitionTypeProto partitionType = 4;
+	PartitionLoadTypeProto partitionLoadType = 5;
+}
+
+message PartitionValueProto
+{
+	string partitionColumnName = 1;
+	string partitionValue = 2;
+	PartitionStatusProto partitionStatus = 3;
+}
+
+message ColumnDescriptorProto
+{
+	string columnName = 1;
+	DataTypeProto dataType = 2;
+	int32 columnSequence = 3;
+	InputFormatProto inputFormat = 4;
+	OutputFormatProto outputFormat = 5;
+	PropertiesProto properties = 6;
+	string comment = 7;
+}
+
+message CKDescriptorProto
+{
+	map<int32, CKInfoProto> ckDescriptors = 1;
+}
+
+message CKInfoProto
+{
+	TableIdentifierProto tableIdentifier = 1;
+	ProjectionIdentifierProto projectionIdentifier = 2;
+	int32 priority = 3;
+	string ckValueConstructor = 4;
+	repeated string columnNames = 5;
+	SortOrderProto sortOrder = 6;
+}
+
+message IndexDescriptorProto
+{
+	repeated IndexInfoProto indexInfos = 1;
+}
+
+message IndexInfoProto
+{
+	IndexTypeProto indextype = 1;
+	repeated ColumnDescriptorProto indexColumns = 2;
+}
+
+message ProjectionDescriptorProto
+{
+	repeated ProjectionInfoProto projectionInfo = 1;
+}
+
+message ProjectionInfoProto
+{
+	ProjectionIdentifierProto projectionIdentifier = 1;
+	repeated ColumnDescriptorProto columns = 2;
+	PartitionDescriptorProto partitionDescriptor = 3;
+	CKDescriptorProto ckDescriptor  = 4;
+	CompressTypeProto compressType = 5;
+	PropertiesProto projectionProperties = 6;
+	int32 ttl = 7;
+	int32 version = 8;
+	StoreTypeProto storeType = 9;
+	string comment = 10;
+}
+
+message RegionLocationProto
+{
+	RegionInfoProto regionInfo = 1;
+	ServerNameProto serverName = 2;
+}
+
+message RegionInfoProto
+{
+	string regionID = 1;
+	CKPriorityProto currentCK = 2;
+	string startCK = 3;
+	string endCK = 4;
+	RegionTypeProto regionType = 5;
+	RegionStatusProto regionStatus = 6;
+}
+message ServerNameProto
+{
+	string hostName = 1;
+	string ip = 2;
+	int32 port = 3;
+	int64 startTime = 4;
+}
+
+message CKValueProto
+{
+	int32 priority = 1;
+	string value = 2;
+	int32 subid = 3;
+}
+
+message FRCBlockletMetaProto
+{
+	string fileName = 1;
+	repeated BlockletMetaProto blockletMeta = 2;
+	string filter = 3;
+}
+
+message BlockletMetaProto
+{
+	int32 offset = 1;
+	int32 length = 2;
+	CKValueProto startCK = 3;
+	CKValueProto endCK = 4;
+}
+
+message SlaveLoadProto
+{
+	ServerNameProto slaveName = 1;
+	MemoryResourceProto memResource = 2;
+	JvmResourceProto jvmResource = 3;
+	repeated RegionLoadProto regionLoads = 4;
+}
+
+message MemoryResourceProto
+{
+	int64 capacity = 1;
+	int64 usedCapacity = 2;
+}
+
+message JvmResourceProto
+{
+	int64 heapSize = 1;
+	int64 usedHeapSize = 2;
+	int32 threadCount = 3;
+	int32 blockedThreadCount = 4;
+	int32 runnableThreadCount = 5;
+	int32 fullGcCount = 6;
+}
+
+message RegionLoadProto
+{
+	string regionID = 1;
+	int32 readRequestCount = 2;
+	int32 writeRequestCount = 3;
+}
+
+message BlockdataRegionLoadProto
+{
+	int64 frcCount = 1;
+	int64 frcFileSize = 2;
+}
+
+message BlockindexRegionLoadProto
+{
+	int64 blockIndexCount = 1;
+	int64 blockIndexSize = 2;
+}
+
+message ProjectionRegionLoadProto
+{
+	int64 projectionFileCount = 1;
+	int64 projectionFileSize = 2;
+}
+
+enum PartitionStatusProto
+{
+    PARTITION_ONLINE = 0;
+    PARTITION_ARCHIVING = 1;
+    PARTITION_DELETE = 2;
+}
+
+enum SlaveStatusProto
+{
+    SLAVE_ALIVE = 0;
+    SLAVE_DEAD = 1;
+    SLAVE_DELAY = 2;
+}
+
+enum RegionStatusProto
+{
+    REGION_OPENING = 0;
+    REGION_ONLINE = 1;
+    REGION_CLOSING = 2;
+    REGION_OFFLINE = 3;
+	REGION_ARCHIVING = 4;
+}
+
+enum RegionTypeProto
+{
+	MAIN_DATA = 0;
+	BLOCK_INDEX = 1;
+	PROJECTION = 2;
+}
+
+enum DataTypeProto
+{
+	TINYINT = 0;
+	SMALLINT = 1;
+	INT = 2;
+	BIGINT = 3;
+	FLOAT = 4;
+	DOUBLE = 5;
+	DECIMAL = 6;
+	STRING = 7;
+	BINARY = 8;
+	BOOLEAN = 9;
+	TIMESTAMP = 10;
+	DATE = 11;
+}
+
+enum PartitionTypeProto
+{
+	DAY = 0;
+	WEEK = 1;
+	MONTH = 2;
+}
+
+enum PartitionLoadTypeProto
+{
+	CURRENT_PARTITION = 0;
+	ARCHIVE_PARTITION = 1;
+	DEFAULT_PARTITION = 2;
+}
+
+message RegionFRCBlockletMetaProto
+{
+	TableIdentifierProto tableIdentifier = 1;
+	string projectionName = 2;
+	RegionInfoProto regionInfo = 3;
+	repeated FRCBlockletMetaProto blocklets = 4;
+}
+
+enum DataTimeStatusProto
+{
+	ADVANCED = 0;
+	NORMAL = 1;
+    DATA_TIME_TimeDELAY = 2;
+}
+
+enum CKPriorityProto
+{
+	FIRST = 0;
+	SECOND = 1;
+	THIRD = 3;
+}
+
+enum StoreTypeProto
+{
+	FRC = 0;
+	ORC = 1;
+}
+
+message PropertiesProto
+{
+	map<string, string> properties = 1;
+}
+
+//压缩类型
+enum CompressTypeProto
+{
+	ZLIB = 0;
+	LZ4 = 1;
+	SNAPPY = 2;
+	ZSTD = 3;
+	LZO = 4;
+}
+
+//索引类型
+enum IndexTypeProto
+{
+	BLOCKLETINDEX = 0;
+}
+
+enum SortOrderProto
+{
+	ASC = 0;
+	DESC = 1;
+}
+
+message InputFormatProto
+{
+	string name = 1;
+	bytes serialized_inputFormat = 2;
+}
+
+message OutputFormatProto
+{
+	string name = 1;
+	bytes serialized_outputFormat = 2;
+}
+
+
+
+// 表分区region的分布
+message PartitionLocationProto {
+    PartitionLocationElementProto partitionLocationElement = 1;
+}
+
+message PartitionLocationElementProto {
+    TableIdentifierProto tableIdentifier = 1;
+    PartitionValueProto partitionValue = 2;
+    repeated ServerNameProto serverName = 3;
+}
+
+
