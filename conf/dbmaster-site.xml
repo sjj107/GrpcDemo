@@ -13,7 +13,7 @@
     <property>
         <description>dbserver master host name</description>
         <name>dbserver.master.host.name</name>
-        <value>DESKTOP-M9DMJFE</value>
+        <value>SW</value>
     </property>
 
     <!-- grpc config -->

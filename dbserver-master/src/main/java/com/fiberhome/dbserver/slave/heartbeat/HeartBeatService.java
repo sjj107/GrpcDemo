@@ -142,7 +142,8 @@ public class HeartBeatService extends CyclePayload
 
         // 从zk中获取Master地址
         // waitingClusterUp();
-        master = new ServerName("DESKTOP-M9DMJFE", "27.10.12.18", 10051, System.currentTimeMillis());
+        //todo sjj
+        master = new ServerName("SW", "192.168.85.1", 10051, System.currentTimeMillis());
 
         // 初始化缓存
         // resourceCacheMgr = ServerResourceCache.getInstance();

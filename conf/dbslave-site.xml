@@ -6,7 +6,7 @@
     <property>
         <description>dbserver slave host name</description>
         <name>dbserver.slave.host.name</name>
-        <value>DESKTOP-M9DMJFE</value>
+        <value>SW</value>
     </property>
 
     <!-- grpc config -->
